@@ -1,0 +1,488 @@
+<!doctype html>
+<html lang="en">
+<head>
+
+    <!-- Webpage Title -->
+    <title>Main | PORTFOLIO</title>
+
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bulma CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <!-- Font Awesome CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap" rel="stylesheet">
+    <link href='{{ url_for("static", filename="mystyle.css") }}' rel="stylesheet">
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+    <script src="{{ url_for('static', filename='sign_up.js') }}"></script>
+</head>
+<style>
+    .is-hidden{
+        display : none;
+    }
+
+    .hero-body {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        margin-left: 150px;
+
+    }
+
+    .content {
+        margin: 30px auto auto auto;
+        max-width: 1000px;
+        min-width: 1000px;
+    }
+
+    .test{
+    font-size: 15px;
+    margin:auto;
+    min-width: 1000px;
+    max-width: 1000px;
+
+    }
+
+    .rbox{
+        max-width: 1000px;
+        min-width: 600px;
+    }
+        .media{
+
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+
+}
+    .control{
+    margin: 30px auto auto auto;
+        max-width: 1000px;
+        min-width: 1000px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .re_re{
+        margin-left: 50px;
+        max-width: 800px;
+        min-width: 800px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        }
+    .control > input{
+    width: 800px;
+    }
+
+    .re_comment{
+        min-width: 800px;
+        max-width: 800px;
+
+    }
+    .image{
+    position:absolute;
+    left:-20px;
+    top:25px;
+    }
+
+</style>
+<script>
+
+    function toggle_like(post_id, type) {
+    let $a_like = $(`#${post_id} a[aria-label='heart']`)
+    let $i_like = $a_like.find("i")
+    if ($i_like.hasClass("fa-heart")) {
+        $.ajax({
+            type: "POST",
+            url: "/update_like",
+            data: {
+                post_id_give: post_id,
+                type_give: type,
+                action_give: "unlike"
+            },
+            success: function (response) {
+                console.log("unlike")
+                $i_like.addClass("fa-heart-o").removeClass("fa-heart")
+                $a_like.find("span.like-num").text(num2str(response["count"]))
+            }
+        })
+    } else {
+        $.ajax({
+            type: "POST",
+            url: "/update_like",
+            data: {
+                post_id_give: post_id,
+                type_give: type,
+                action_give: "like"
+            },
+            success: function (response) {
+                console.log("like")
+                $i_like.addClass("fa-heart").removeClass("fa-heart-o")
+                $a_like.find("span.like-num").text(num2str(response["count"]))
+            }
+        })
+
+    }
+}
+function num2str(count) {
+    if (count > 10000) {
+        return parseInt(count / 1000) + "k"
+    }
+    if (count > 500) {
+        return parseInt(count / 100) / 10 + "k"
+    }
+    if (count == 0) {
+        return ""
+    }
+    return count
+}
+    $(document).ready(function () {
+        get_detail()
+        get_posts()
+        get_comment()
+
+        $('.more').click(function () {
+            if ($('.more').hasClass('more')) {
+                $('.more').addClass('close').removeClass('more');
+                $('.board').css('visibility', 'visible');
+            } else if ($('.close').hasClass('close')) {
+                $('.close').addClass('more').removeClass('close');
+                $('.board').css('visibility', 'hidden');
+            }
+        });
+    });
+    let number = {{ number }}
+function get_recomment(){
+
+    $.ajax({
+        type: "GET",
+        url: `/get_recomment`,
+        data: {},
+        success: function (response) {
+            if (response["result"] == "success") {
+                let reply = response["reply"]
+                let recomment = response["recomment"]
+                for (let i = 0; i < reply.length; i++){
+                    for (let j = 0; j < recomment.length; j++){
+                        if(reply[i]["_id"] === recomment[j]["comment_id"]){
+                        let time_recomment = new Date(recomment[j]["re_re_date"])
+                        let time_before = time2str(time_recomment)
+
+                            let recom = recomment[j]
+                            let comment = recom['re_comment']
+                            let temp_html = `<div class="rbox" id="${recom["_id"]}">
+                                                <article class="media">
+                                                    <div class="media-left">
+                                                        <a class="image is-32x32" href="/user/${recom['username']}">
+                                                            <img class="is-rounded" src="/static/${recom['profile_pic_real']}"
+                                                                 alt="Image">
+                                                        </a>
+                                                    </div>
+                                                    <div class="media-content">
+                                                        <div class="content">
+                                                            <p>
+                                                                <strong>${recom['profile_name']}</strong> <small><i>@${recom['username']}</i></small> <small>${time_before}</small>
+                                                                <br>
+                                                                ${comment}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </article>
+                                             </div>`
+                             $("#rere_comment").append(temp_html)
+                            }
+                        }
+                    }
+}
+            }
+
+    })
+
+}
+
+
+function get_comment(){
+
+    $.ajax({
+        type: "GET",
+        url: `/get_comment`,
+        data: {},
+        success: function (response) {
+            if (response["result"] == "success") {
+                let reply = response["reply"]
+                let posts = response["posts"]
+                for (let i = 0; i < posts.length; i++){
+                    if(posts[i]["num"] === number){
+                        for (let j = 0; j < reply.length; j++){
+                            if(posts[i]["_id"] === reply[j]["post_id"]){
+                            let time_reply = new Date(reply[j]["re_date"])
+                            let time_before = time2str(time_reply)
+
+                                let repl = reply[j]
+                                let count = repl["count"]
+                                let class_heart = repl['heart_by_me'] ? "fa-heart" : "fa-heart-o"
+                    let count_heart = repl['count_heart']
+                                let comment = repl['reply']
+                                let temp_html = `<div class="rbox" id="${repl["_id"]}">
+                                        <article class="media">
+                                            <div class="media-left">
+                                                <a class="image is-32x32" href="/user/${repl['username']}">
+                                                    <img class="is-rounded" src="/static/${repl['profile_pic_real']}"
+                                                         alt="Image">
+                                                </a>
+                                            </div>
+                                            <div class="media-content">
+                                                <div class="content">
+                                                    <p>
+                                                        <strong>${repl['profile_name']}</strong> <small><i>@${repl['username']}</i></small> <small>${time_before}</small>
+                                                        <br>
+                                                        ${comment}
+                                                    </p>
+                                                </div>
+                                                <nav class="level is-mobile">
+                                                    <div class="level-left">
+                                                        <a class="level-item is-sparta" aria-label="heart" onclick="toggle_like('${repl['_id']}', 'heart')">
+                                                            <span class="icon is-small"><i class="fa ${class_heart}" aria-hidden="true"></i></span>&nbsp;<span class="like-num">${count_heart}</span>
+                                                        </a>
+                                                            <span style = "cursor:pointer" onclick="get_recomment()" class = "re_comment_input">답글 남기기</span>
+
+                                                    </div>
+
+                                                </nav>
+                                                <p class="re_re is-hidden" id = "re_re">
+                                                <input id="re_comment_input" class="input is-rounded" placeholder="답글을 작성해 주세요."><button onclick="recomment_post('${repl["_id"]}')" class="button is-black" style="border-radius: 50px;">작성</button></p>
+                                                    <div class="rere_comment" id="rere_comment">
+
+                                                    </div>
+                                                    </div>
+                                                </article>
+                                            </div>`
+                                 $("#test").append(temp_html)
+                            }
+                        }
+                    }
+
+                }
+            }
+    const re_comments= document.querySelectorAll(".re_comment_input")
+    const re_inputs = document.querySelectorAll(".re_re")
+        for(let i = 0; i < re_inputs.length; i++){
+            re_comments[i].addEventListener("click",changecolor)
+            function changecolor(){
+                re_inputs[i].classList.toggle("is-hidden")
+            }
+        }
+
+        }
+
+    })
+
+}
+
+function get_detail() {
+            $.ajax({
+                type: "GET",
+                url: `/get_posts`,
+                data: {},
+                success: function (response) {
+                    if (response["result"] == "success") {
+                        let posts = response["posts"]
+                        for (let i = 0; i < posts.length; i++) {
+                            if (posts[i]['num'] === number) {
+                                let post = posts[i]
+                                let title = posts[i]['title']
+                                let username = posts[i]['username']
+                                let profile_name = posts[i]['profile_name']
+                                let date = posts[i]['date'].slice(0, 10)
+                                let comment = posts[i]['comment']
+                                let pic = posts[i]['pic_real']
+                                let class_heart = post['heart_by_me'] ? "fa-heart" : "fa-heart-o"
+                                let count_heart = post['count_heart']
+                                let reply_count = post['count_reply']
+
+                                let html_temp = ``
+                                if (posts[i]['pic']) {
+                                    html_temp = `<div class="box" id="${post["_id"]}">
+                                                <h4>제목 : ${title}</h4><hr>
+                                                <div class="info">
+                                                    <i style="font-size: 10px">작성자 : ${profile_name}</i>
+                                                    <i style="font-size: 10px">작성일 : ${date}</i>
+                                                </div><hr>
+
+                                                        <img src="/${pic}"><br>
+                                                        ${comment}<hr>
+                                                 <nav class="level is-mobile">
+                                                        <div class="level-left">
+                                                            <a class="level-item is-sparta" aria-label="heart" onclick="toggle_like('${post['_id']}', 'heart')">
+                                                                                <span class="icon is-small"><i class="fa ${class_heart}"
+                                                                                                               aria-hidden="true"></i></span>&nbsp;<span
+                                                                    class="like-num">${count_heart}</span>
+                                                            </a>
+                                                        </div>
+
+                                                    </nav>
+                                            </div>
+<div class="media-content">
+            <div class="field">
+                <p class="control">
+                    <input id="input-post" class="input is-rounded" placeholder="댓글을 작성해 주세요."
+                           ><button class="button is-black" onclick="comment_post('${post['_id']}')" style="border-radius: 50px;">작성</button></p><p>댓글 ${reply_count}</p>
+            </div>
+        </div>`
+                                } else {
+                                    html_temp = `<div class="box" id="${post["_id"]}">
+                                                <h4>제목 : ${title}</h4><hr>
+                                                <div class="info">
+                                                    <i style="font-size: 10px">작성자 : ${profile_name}</i>
+                                                    <i style="font-size: 10px">작성일 : ${date}</i>
+                                                </div><hr>
+
+                                                      ${comment}<hr>
+                                                 <nav class="level is-mobile">
+                                                        <div class="level-left">
+                                                            <a class="level-item is-sparta" aria-label="heart" onclick="toggle_like('${post['_id']}', 'heart')">
+                                                                                <span class="icon is-small"><i class="fa ${class_heart}"
+                                                                                                               aria-hidden="true"></i></span>&nbsp;<span
+                                                                    class="like-num">${count_heart}</span>
+                                                            </a>
+                                                        </div>
+
+                                                    </nav>
+                                            </div>
+<div class="media-content">
+            <div class="field">
+                <p class="control">
+                    <input id="input-post" class="input is-rounded" placeholder="댓글을 작성해 주세요."
+                           ><button class="button is-black" onclick="comment_post('${post['_id']}')" style="border-radius: 50px;">작성</button></p><p>댓글 ${reply_count}</p>
+            </div>
+        </div>`
+                                }
+                                $("#content").append(html_temp)
+                            }
+                        }
+                    }
+
+                }
+            })
+        }
+        function recomment_post(comment_id) {
+            let re_comment = $("#re_comment_input").val()
+            let today = new Date().toISOString()
+            $.ajax({
+                type: "POST",
+                url: "/update_re_comment",
+                data: {
+                    comment_id_give: comment_id,
+                    re_comment_give:re_comment,
+                    re_re_date_give:today
+                },
+
+                success: function (response) {
+                    window.location.reload()
+                }
+            })
+        }
+
+        function comment_post(post_id) {
+            let reply = $("#input-post").val()
+            let today = new Date().toISOString()
+            $.ajax({
+                type: "POST",
+                url: "/update_comment",
+                data: {
+                    post_id_give: post_id,
+                    reply_give:reply,
+                    re_date_give:today
+                },
+
+                success: function (response) {
+                    window.location.reload()
+                }
+            })
+        }
+
+function time2str(date) {
+    let today = new Date()
+    let time = (today - date) / 1000 / 60  // 분
+
+    if (time < 60) {
+        return parseInt(time) + "분 전"
+    }
+    time = time / 60  // 시간
+    if (time < 24) {
+        return parseInt(time) + "시간 전"
+    }
+    time = time / 24
+    if (time < 7) {
+        return parseInt(time) + "일 전"
+    }
+    return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`
+}
+
+
+
+</script>
+<body>
+<div class="sign-up" id="sign_up_btn">
+    <button class="button is white" onclick="sign_out()">로그아웃</button>
+</div>
+
+<section class="hero is-white">
+    <div class="hero-body has-text-centered" style="padding-bottom:1rem;;">
+        <h1 class="title is-sparta" onclick="window.location.href='/'">PORTFOLIO</h1>
+
+    </div>
+</section>
+<div class="board-list">
+<span class="more">
+    <span class="blind"><b><i class="fa fa-bars" aria-hidden="true"></i>게시판 보기</b></span>
+</span>
+    <div class="board">
+        <ul class="list">
+            <li onclick="window.location.href='/board/free'">자유게시판</li>
+        </ul>
+
+    </div>
+</div>
+<div class="content" id="content">
+
+</div>
+<div class="test" id="test">
+</div>
+
+<div class="popular">
+    <table class="table">
+        <thead>
+        <th>번호</th>
+        <th>제목</th>
+        <th>글쓴이</th>
+        <th>추천수</th>
+        <th>날짜</th>
+        </thead>
+        <tbody id="post-box">
+        <tr><!-- 첫번째 줄 시작 -->
+            <td>번호</td>
+            <td><a>이곳에 제목이 입력됩니다.</a></td>
+            <td>글쓴이</td>
+            <td>추천수</td>
+            <td>날짜</td>
+        </tr><!-- 첫번째 줄 끝 -->
+        </tbody>
+
+    </table>
+</div>
+
+
+</body>
+</html>

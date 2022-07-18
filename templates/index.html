@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+
+    <!-- Webpage Title -->
+    <title>Main | PORTFOLIO</title>
+
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bulma CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <!-- Font Awesome CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap" rel="stylesheet">
+    <link href='{{ url_for("static", filename="mystyle.css") }}' rel="stylesheet">
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+    <script src="{{ url_for('static', filename='sign_up.js') }}"></script>
+</head>
+<style>
+    .hero-body {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        margin-left: 60px;
+
+    }
+</style>
+
+<script>
+    $(document).ready(function () {
+        $('.more').click(function () {
+            if ($('.more').hasClass('more')) {
+                $('.more').addClass('close').removeClass('more');
+                $('.board').css('visibility', 'visible');
+            } else if ($('.close').hasClass('close')) {
+                $('.close').addClass('more').removeClass('close');
+                $('.board').css('visibility', 'hidden');
+            }
+        });
+    });
+</script>
+<body>
+<div class="sign-up" id="sign_up_btn">
+    <button class="button is white" onclick="sign_out()">로그아웃</button>
+</div>
+<section class="hero is-white">
+    <div class="hero-body has-text-centered" style="padding-bottom:1rem;;">
+        <h1 class="title is-sparta" onclick="window.location.href='/'">PORTFOLIO</h1>
+        <div class="searching">
+            <input class="input_search" type="text" placeholder="검색어를 입력하세요.">
+            <button class="button"><i class="fa fa-search" aria-hidden="true"></i></button>
+        </div>
+    </div>
+</section>
+<div class="board-list">
+<span class="more">
+    <span class="blind"><b><i class="fa fa-bars" aria-hidden="true"></i>게시판 보기</b></span>
+</span>
+    <div class="board">
+        <ul class="list">
+            <li onclick="window.location.href='/board/free'">자유게시판</li>
+
+        </ul>
+    </div>
+</div>
+<div class="popular">
+    <h2><b>인기 게시물</b></h2>
+    <table class="table">
+        <thead>
+        <th>번호</th>
+        <th>제목</th>
+        <th>글쓴이</th>
+        <th>추천수</th>
+        <th>날짜</th>
+        </thead>
+        <tbody>
+        <tr><!-- 첫번째 줄 시작 -->
+            <td>번호</td>
+            <td><a>이곳에 제목이 입력됩니다.</a></td>
+            <td>글쓴이</td>
+            <td>추천수</td>
+            <td>날짜</td>
+        </tr><!-- 첫번째 줄 끝 -->
+        </tbody>
+
+    </table>
+
+</div>
+
+
+
+
+</body>
+</html>

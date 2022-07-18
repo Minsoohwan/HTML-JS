@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+
+    <!-- Webpage Title -->
+    <title>Main | PORTFOLIO</title>
+
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bulma CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+    <!-- Font Awesome CSS -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap" rel="stylesheet">
+    <link href='{{ url_for("static", filename="mystyle.css") }}' rel="stylesheet">
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+    <script src="{{ url_for('static', filename='sign_up.js') }}"></script>
+</head>
+<style>
+    .hero-body {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        margin-left: 150px;
+
+    }
+</style>
+
+<script>
+    $(document).ready(function () {
+        get_posts()
+        $('.more').click(function () {
+            if ($('.more').hasClass('more')) {
+                $('.more').addClass('close').removeClass('more');
+                $('.board').css('visibility', 'visible');
+            } else if ($('.close').hasClass('close')) {
+                $('.close').addClass('more').removeClass('close');
+                $('.board').css('visibility', 'hidden');
+            }
+        });
+    });
+
+</script>
+<body>
+<div class="sign-up" id="sign_up_btn">
+    <button class="button is white" onclick="sign_out()">로그아웃</button>
+</div>
+
+<section class="hero is-white">
+    <div class="hero-body has-text-centered" style="padding-bottom:1rem;;">
+        <h1 class="title is-sparta" onclick="window.location.href='/'">PORTFOLIO</h1>
+
+    </div>
+</section>
+<div class="board-list">
+<span class="more">
+    <span class="blind"><b><i class="fa fa-bars" aria-hidden="true"></i>게시판 보기</b></span>
+</span>
+    <div class="board">
+        <ul class="list">
+            <li onclick="window.location.href='/board/free'">자유게시판</li>
+        </ul>
+    </div>
+</div>
+<div class="popular">
+    <table class="table">
+        <thead>
+        <th>번호</th>
+        <th>제목</th>
+        <th>글쓴이</th>
+        <th>추천수</th>
+        <th>날짜</th>
+        </thead>
+        <tbody id="post-box">
+        <tr><!-- 첫번째 줄 시작 -->
+            <td>번호</td>
+            <td><a>이곳에 제목이 입력됩니다.</a></td>
+            <td>글쓴이</td>
+            <td>추천수</td>
+            <td>날짜</td>
+        </tr><!-- 첫번째 줄 끝 -->
+        </tbody>
+
+    </table>
+    <button class="button is white" onclick='$("#modal-write").addClass("is-active")'><i class="fa fa-pencil"
+                                                                                         aria-hidden="true"></i>글쓰기
+    </button>
+</div>
+<div class="modal" id="modal-write">
+    <div class="modal-background" onclick='$("#modal-write").removeClass("is-active")'></div>
+    <div class="modal-content">
+        <div class="box">
+            <article class="media">
+                <div class="media-content">
+                    <div class="field">
+                        <p class="control">
+                                        <textarea id="title-post" class="input"
+                                                  placeholder="제목을 입력해 주세요."></textarea>
+                        </p>
+                    </div>
+                    <div class="field">
+                        <label class="label" for="input-pic">사진 첨부</label>
+
+                        <div class="control is-expanded">
+                            <div class="file has-name">
+                                <label class="file-label" style="width:100%">
+                                    <input id="file" class="file-input" type="file"
+                                           name="resume">
+                                    <span class="file-cta"><span class="file-icon"><i
+                                            class="fa fa-upload"></i></span>
+                                <span class="file-label">파일 선택</span>
+                            </span>
+                                    <span id="file-name" class="file-name"
+                                          style="width:100%;max-width:100%">{{ file_receive }}</span>
+                                </label>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="field">
+                        <p class="control">
+                                        <textarea id="textarea-post" class="textarea"
+                                                  placeholder="내용을 입력해 주세요."></textarea>
+                        </p>
+                    </div>
+                    <nav class="level is-mobile">
+                        <div class="level-left">
+
+                        </div>
+                        <div class="level-right">
+                            <div class="level-item">
+                                <a class="button is-sparta" onclick="post()">작성 완료</a>
+                            </div>
+                            <div class="level-item">
+                                <a class="button is-sparta is-outlined"
+                                   onclick='$("#modal-write").removeClass("is-active")'>취소</a>
+                            </div>
+                        </div>
+                    </nav>
+                </div>
+            </article>
+        </div>
+    </div>
+    <button class="modal-close is-large" aria-label="close"
+            onclick='$("#modal-post").removeClass("is-active")'></button>
+</div>
+</body>
+</html>
